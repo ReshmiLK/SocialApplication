@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    {%if request.user.profile%}
+    <a href="{%url 'profile-detail'%}">view profile</a>
+    <a href="{%url 'profile-edit' request.user.profile.id%}">update profile</a>
+    {%else%}
+    <a href="{%url 'profile-add'%}">Add profile</a>
+    {%endif%}
+    <a href="{%url 'signout'%}"><button>LogOut</button></a>
+    <!-- post add sec -->
+    <div class="container">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    {{form.as_p}}
+                    <button type="submit">post</button>
+                </form>
+            </div>
+            <div class="col-4"></div>
+        </div>
+    </div>
+    <!-- post add end sc -->
+
+    <!-- post list sec -->
+    <div>
+        {%for p in post%}
+        {{p.caption}}
+        {%if p.image%}
+        <img src="{{p.image.url}}" alt="">
+
+        {%endif%} <a href="{%url 'like' p.id%}">Like</a> {{p.like_count}}
+        <a href="{%url 'post-delete' p.id%}"><button>delete</button></a>
+        <div>
+            <h3>add comment</h3>
+            <form action="{%url 'add-comment' p.id%}" method="post">
+                {%csrf_token%}
+                <input type="text" placeholder="comment" name="comment">
+                <button>add</button>
+            </form>
+        </div>
+        <!-- comments list -->
+
+        {%for cmnt in p.post_comment%}
+        <h2>comments</h2>
+
+        <div>
+            {{cmnt.comment}} posted by {{cmnt.user}} on {{cmnt.created_date}}
+        </div>
+
+        {%endfor%}
+        <!-- post list end sec -->
+
+        {%endfor%}
+        <!-- comments list end -->
+
+    </div>
+
+</body>
+
+</html>
